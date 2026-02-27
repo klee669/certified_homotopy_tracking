@@ -1,6 +1,6 @@
-# CertifiedMonodromyComputation.jl
+# CertifiedHomotopyTracking.jl
 
-**CertifiedMonodromyComputation.jl** is a Julia package for **certified homotopy tracking** and **monodromy group computation**. It uses interval arithmetic (via [Nemo.jl](https://github.com/Nemocas/Nemo.jl) and Arb) to provide mathematically rigorous results and integrates with [GAP](https://www.gap-system.org/) for group-theoretic analysis.
+**CertifiedHomotopyTracking.jl** is a Julia package for **certified homotopy tracking** and **monodromy group computation**. It uses interval arithmetic (via [Nemo.jl](https://github.com/Nemocas/Nemo.jl) and Arb) to provide mathematically rigorous results and integrates with [GAP](https://www.gap-system.org/) for group-theoretic analysis.
 
 ## Features
 
