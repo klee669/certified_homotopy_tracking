@@ -164,7 +164,7 @@ function track_edge!(
         
         # Perform Tracking
         if predictor
-            y = track(Fab, start_point; show_display = false, refinement_threshold = 1/8)
+            y = track(Fab, start_point; show_display = true, refinement_threshold = 1/8)
         else
             y = tracking_without_predictor(Fab, start_point)
         end

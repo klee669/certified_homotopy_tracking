@@ -1,61 +1,80 @@
-include("../src/certified_monodromy_computation.jl")
+using Pkg
+Pkg.activate(joinpath(@__DIR__, ".."))
 
-CCi = AcbField()
-eR, (x,y,η) = CCi["x","y","η"]
-HR, (t) = eR["t"]
-f = CCi("1+/- 0.0000000001")*x^2+3*y-4
-g = y^2+3
+using Nemo
+using AbstractAlgebra
+using CertifiedMonodromyComputation
+
+println("=== Running Small Examples ===")
+
+# ------------------------------------------------------------------------------
+# Example 1: Simple System
+# ------------------------------------------------------------------------------
+println("\n[Example 1] Simple Quadratic System")
+@monodromy_setup begin
+    vars = (x,y)
+end
+const CCi = _CCi
+
+f = CCi("1+/- 0.0000000001")*x^2 + 3*y - 4
+g = y^2 + 3
 
 F = [f g]
 G = [x^2-1 y^2-1]
 
-H = straight_line_homotopy(F,G,t)
-point = [CCi(1),CCi(-1)]
+H = straight_line_homotopy(F, G, t)
+point = [CCi(1), CCi(-1)]
 
 
-x,it = track(H, point, .1; iterations_count = true, tracking = "non")
-x,it = track(H, point, .1; iterations_count = true)
-x,it = track(H, point, .1; show_display =false)
-x,it = track(H, point, .1; predictor = "Linear")
+println("  Running: predictor='without_predictor'")
+track(H, point; iterations_count=true, predictor="without_predictor")
+
+println("  Running: Standard tracking")
+track(H, point; iterations_count=true)
+
+println("  Running: predictor='Linear'") 
+track(H, point; predictor="Linear")
 
 
+# ------------------------------------------------------------------------------
+# Example 2: Katsura 3
+# ------------------------------------------------------------------------------
+println("\n[Example 2] Katsura 3")
+@monodromy_setup begin
+    vars = (a,b,c)
+end
 
+f1 = a + 2*b + 2*c - 1
+f2 = a^2 + 2*b^2 + 2*c^2 - a
+f3 = 2*a*b + 2*b*c - b
 
-#Katsura 3
-CCi = AcbField()
-R, (a, b, c, η) = CCi["a","b","c","η"]
-HR, (t) = R["t"]
-
-f1 = a+2*b+2*c-1
-f2 = a^2+2*b^2+2*c^2-a
-f3 =  2*a*b+2*b*c-b
-
-g1 = a-1
-g2 = b^2-1
-g3 = c^2-1
+g1 = a - 1
+g2 = b^2 - 1
+g3 = c^2 - 1
 G = [g1 g2 g3]
 F = [f1 f2 f3]
-H = straight_line_homotopy(F,G,t)
-point = [CCi(1),CCi(-1), CCi(-1)]
-A = jacobian_inverse(G,point)
+
+H = straight_line_homotopy(F, G, t)
+point = [CCi(1), CCi(-1), CCi(-1)]
 
 
-x,it = track(H, point, .1; iterations_count = true, tracking = "non")
-x,it = track(H, point, .1; iterations_count = true)
-x,it = track(H, point, .1; show_display =false)
-x,it = track(H, point, .1; predictor = "Linear")
+println("  Running: predictor='without_predictor'")
+track(H, point; iterations_count=true, predictor="without_predictor")
+
+println("  Running: Standard tracking")
+track(H, point; iterations_count=true)
 
 
-
-
-
-#random 5
-CCi = AcbField()
-R, (x_1, x_2, x_3, x_4, x_5, η) = CCi["x_1","x_2","x_3","x_4","x_5","η"]
-HR, (t) = R["t"]
+# ------------------------------------------------------------------------------
+# Example 3: Random 5
+# ------------------------------------------------------------------------------
+println("\n[Example 3] Random 5")
+@monodromy_setup begin
+    vars = (x_1, x_2, x_3, x_4, x_5)
+end
 
 f1 = .927278*x_1^2-.823147*x_2^2+.607748*x_1*x_3+.693497*x_2*x_3+.722064*x_3^2+.963187*x_1*x_4+.950894*x_2*x_4+.407278*x_3*x_4+.756508*x_4^2+.379703*x_1*x_5+.220712*x_2*x_5+.137115*x_3*x_5+.196656*x_4*x_5+.524988*x_5^2+.588265*x_1-1
-f2 =.365557*x_1^2+.293659*x_1*x_2+.0486217*x_2^2+.760087*x_1*x_3+.192765*x_2*x_3+.187096*x_3^2+.970685*x_1*x_4+.818154*x_2*x_4+.687038*x_3*x_4+.725331*x_4^2+.921436*x_1*x_5+.383749*x_2*x_5+.600378*x_3*x_5+.0475787*x_4*x_5+.544211*x_5^2+.665631*x_1+.372438*x_2+.0689895*x_3+.0455981*x_4+.105673*x_5-1 
+f2 = .365557*x_1^2+.293659*x_1*x_2+.0486217*x_2^2+.760087*x_1*x_3+.192765*x_2*x_3+.187096*x_3^2+.970685*x_1*x_4+.818154*x_2*x_4+.687038*x_3*x_4+.725331*x_4^2+.921436*x_1*x_5+.383749*x_2*x_5+.600378*x_3*x_5+.0475787*x_4*x_5+.544211*x_5^2+.665631*x_1+.372438*x_2+.0689895*x_3+.0455981*x_4+.105673*x_5-1 
 f3 = .88684*x_1^2+.501506*x_1*x_2+.950974*x_2^2+.280474*x_1*x_3+.3905*x_2*x_3+.60163*x_3^2+.0353378*x_1*x_4+.0164045*x_2*x_4+.440212*x_3*x_4+.0902825*x_4^2+.626518*x_1*x_5+.371885*x_2*x_5+.0141552*x_3*x_5+.521011*x_4*x_5+.428927*x_5^2+.752611*x_1+.902085*x_2+.386978*x_3+.932756*x_4+.749452*x_5+1 
 f4 = .33101*x_1^2+.0857361*x_1*x_2+.168985*x_2^2+.227185*x_1*x_3+.807785*x_2*x_3+.826666*x_3^2+.366811*x_1*x_4+.471036*x_2*x_4+.933367*x_3*x_4+.749671*x_4^2+.138582*x_1*x_5+.800083*x_2*x_5+.286077*x_3*x_5+.685016*x_4*x_5+.65684*x_5^2+.48687*x_1+.0419693*x_2+.62032*x_3+.525236*x_4+.925916*x_5-1
 f5 = .0968952*x_1^2+.0351331*x_1*x_2+.0769037*x_2^2+.80095*x_1*x_3+.073002*x_2*x_3+.898968*x_3^2+.986925*x_1*x_4+.414551*x_2*x_4+.314131*x_3*x_4+.196633*x_4^2+.714395*x_1*x_5+.533857*x_2*x_5+.190491*x_3*x_5+.772067*x_4*x_5+.992362*x_5^2+.624805*x_1+.503292*x_2+.72764*x_3+.376797*x_4+.221683*x_5-1
@@ -67,28 +86,34 @@ g4 = x_4^2-1
 g5 = x_5^2-1
 G = [g1 g2 g3 g4 g5]
 F = [f1 f2 f3 f4 f5]
-H = ([(1-t)*(1+onei(CCi)); (1-t)*(1+onei(CCi)); (1-t)*(1+onei(CCi)); (1-t)*(1+onei(CCi)); (1-t)*(1+onei(CCi))]*G+[t; t; t; t; t]*F)[1,:]
-point = [CCi(1),CCi(1), CCi(-1), CCi(-1), CCi(1)]
-A = jacobian_inverse(G,point)
+
+# users can define own homotopy as well
+gamma_vec = [(1-t)*(1+onei(CCi)) for _ in 1:5]
+H_matrix = gamma_vec .* G + [t; t; t; t; t] .* F
+H = H_matrix[1,:]
+
+point = [CCi(1), CCi(1), CCi(-1), CCi(-1), CCi(1)]
+
+println("  Running: predictor='without_predictor'")
+track(H, point; iterations_count=true, predictor="without_predictor")
+
+println("  Running: Standard tracking")
+track(H, point; iterations_count=true)
 
 
-x,it = track(H, point, .1; iterations_count = true, tracking = "non")
-x,it = track(H, point, .1; iterations_count = true)
-
-x,it = track(H, point, .1)
-x,it = track(H, point, .1; predictor = "Linear")
-
-
-#random 4
-CCi = AcbField()
-R, (x_1, x_2, x_3, x_4,η) = CCi["x_1","x_2","x_3","x_4","η"]
-HR, (t) = R["t"]
-
+# ------------------------------------------------------------------------------
+# Example 4: Random 4
+# ------------------------------------------------------------------------------
+println("\n[Example 4] Random 4")
+@monodromy_setup begin
+    vars = (x_1, x_2, x_3, x_4)
+end
 
 f1 =.0872615*x_1^3+.692219*x_1^2*x_2+.590267*x_1*x_2^2+.0444366*x_2^3+.466661*x_1^2*x_3+.868943*x_1*x_2*x_3+.941366*x_2^2*x_3+.812655*x_1*x_3^2+.242243*x_2*x_3^2+.669539*x_3^3+.266083*x_1^2*x_4+.287879*x_1*x_2*x_4+.6246*x_2^2*x_4+.473062*x_1*x_3*x_4+.0423194*x_2*x_3*x_4+.441463*x_3^2*x_4+.840212*x_1*x_4^2+.321239*x_2*x_4^2+.305562*x_3*x_4^2+.94091*x_4^3+.95585*x_1^2+.705873*x_1*x_2+.615731*x_2^2+.113704*x_1*x_3+.473057*x_2*x_3+.240906*x_3^2+.887969*x_1*x_4+.152487*x_2*x_4+.510653*x_3*x_4+.323194*x_4^2+.0460365*x_1+.285128*x_2+.236732*x_3+.0680426*x_4+.413999
 f2= .618945*x_1^3+.0519869*x_1^2*x_2+.520561*x_1*x_2^2+.91902*x_2^3+.833379*x_1^2*x_3+.843751*x_1*x_2*x_3+.677848*x_2^2*x_3+.501711*x_1*x_3^2+.0833018*x_2*x_3^2+.852516*x_3^3+.286736*x_1^2*x_4+.00307513*x_1*x_2*x_4+.313163*x_2^2*x_4+.899034*x_1*x_3*x_4+.656079*x_2*x_3*x_4+.791897*x_3^2*x_4+.873269*x_1*x_4^2+.514763*x_2*x_4^2+.992153*x_3*x_4^2+.129941*x_4^3+.290805*x_1^2+.00903682*x_1*x_2+.993131*x_2^2+.895608*x_1*x_3+.168894*x_2*x_3+.0439495*x_3^2+.601272*x_1*x_4+.733244*x_2*x_4+.817976*x_3*x_4+.560196*x_4^2+.866896*x_1+.192821*x_2+.428804*x_3+.320001*x_4+.0889948
 f3=.46682*x_1^3+.605313*x_1^2*x_2+.590098*x_1*x_2^2+.467713*x_2^3+.131827*x_1^2*x_3+.373579*x_1*x_2*x_3+.810717*x_2^2*x_3+.810362*x_1*x_3^2+.825313*x_2*x_3^2+.683903*x_3^3+.667616*x_1^2*x_4+.975601*x_1*x_2*x_4+.205039*x_2^2*x_4+.753314*x_1*x_3*x_4+.0348742*x_2*x_3*x_4+.119425*x_3^2*x_4+.749648*x_1*x_4^2+.0500232*x_2*x_4^2+.493154*x_3*x_4^2+.727394*x_4^3+.943799*x_1^2+.0162906*x_1*x_2+.885007*x_2^2+.943092*x_1*x_3+.402745*x_2*x_3+.452605*x_3^2+.858956*x_1*x_4+.695774*x_2*x_4+.47884*x_3*x_4+.787586*x_4^2+.441647*x_1+.273723*x_2+.550337*x_3+.394416*x_4+.730315
 f4=   .159534*x_1^3+.354006*x_1^2*x_2+.561382*x_1*x_2^2+.111318*x_2^3+.822695*x_1^2*x_3+.370602*x_1*x_2*x_3+.73178*x_2^2*x_3+.132041*x_1*x_3^2+.765134*x_2*x_3^2+.0555769*x_3^3+.219593*x_1^2*x_4+.283968*x_1*x_2*x_4+.516694*x_2^2*x_4+.0306527*x_1*x_3*x_4+.7965*x_2*x_3*x_4+.454399*x_3^2*x_4+.761709*x_1*x_4^2+.0421321*x_2*x_4^2+.224896*x_3*x_4^2+.0372197*x_4^3+.659471*x_1^2+.417035*x_1*x_2+.547528*x_2^2+.546075*x_1*x_3+.187414*x_2*x_3+.0898242*x_3^2+.703758*x_1*x_4+.829478*x_2*x_4+.694859*x_3*x_4+.0666475*x_4^2+.219521*x_1+.375214*x_2+.970747*x_3+.811765*x_4+.277561
+
 g1 = x_1^3-1
 g2 = x_2^3-1
 g3 = x_3^3-1
@@ -98,21 +123,23 @@ F = [f1 f2 f3 f4]
 H = straight_line_homotopy(F,G,t)
 point = [CCi(1),CCi(1),CCi(1), CCi(1)]
 
-x,it = track(H, point, .1; iterations_count = true, tracking = "non")
-x,it = track(H, point, .1; iterations_count = true, tracking = "truncate")
+println("  Running: predictor='without_predictor'")
+track(H, point; iterations_count=true, predictor="without_predictor")
+
+println("  Running: Standard tracking")
+track(H, point; iterations_count=true)
+
+println("  Running: predictor='Linear'")
+track(H, point; predictor="Linear")
 
 
-x,it = track(H, point, .1)
-x,it = track(H, point, .1; predictor = "Linear")
-
-
-
-
-#Katsura 9
-CCi = AcbField()
-R, (a, b, c, d, e, f, g, h, i,η) = CCi["a", "b", "c", "d", "e", "f", "g", "h", "i","η"]
-HR, (t) = R["t"]
-
+# ------------------------------------------------------------------------------
+# Example 5: Katsura 9
+# ------------------------------------------------------------------------------
+println("\n[Example 5] Katsura 9")
+@monodromy_setup begin
+    vars = (a, b, c, d, e, f, g, h, i)
+end
 
 f1 =a+2*b+2*c+2*d+2*e+2*f+2*g+2*h+2*i-1
 f2=  a^2+2*b^2+2*c^2+2*d^2+2*e^2+2*f^2+2*g^2+2*h^2+2*i^2-a
@@ -135,16 +162,104 @@ g8 = g^2-1
 g9 = i^2-1
 G = [g1 g2 g3 g4 g5 g6 g7 g8 g9]
 F = [f1 f2 f3 f4 f5 f6 f7 f8 f9]
-H = zeros(HR,9)
-for i = 1:9
-    H[i]= G[i]*(1-t)*(1+onei(CCi))+F[i]*t
-end
+
+H = straight_line_homotopy(F,G,t)
 point = [CCi(1),CCi(-1),CCi(-1),CCi(-1),CCi(-1),CCi(-1),CCi(-1),CCi(-1), CCi(-1)]
-A = jacobian_inverse(G,point)
 
-x,it = track(H, point, .1; iterations_count = true, tracking = "non")
-x,it = track(H, point, .1; iterations_count = true, tracking = "truncate")
+println("  Running: predictor='without_predictor'")
+track(H, point; iterations_count=true, predictor="without_predictor")
+
+println("  Running: Standard tracking")
+track(H, point)
+track(H, point; show_display=false)
+
+println("  Running: predictor='Linear'")
+track(H, point; predictor="Linear")
 
 
-x,it = track(H, point, .1)
-x,it = track(H, point, .1; predictor = "Linear")
+
+# ----------------------------------------------------------------
+# 1. 변수 및 시스템 정의
+# ----------------------------------------------------------------
+@variables x_1 x_2 x_3 x_4 t
+@variables gamma # Gamma Trick용 파라미터
+
+# --- Target System F (Random 4) ---
+# (복잡한 계수를 그대로 사용합니다. Symbolics가 이를 Float64로 인식하고,
+#  나중에 acb 값과 연산될 때 자동으로 acb로 변환됩니다.)
+
+f1 = .0872615*x_1^3+.692219*x_1^2*x_2+.590267*x_1*x_2^2+.0444366*x_2^3+.466661*x_1^2*x_3+.868943*x_1*x_2*x_3+.941366*x_2^2*x_3+.812655*x_1*x_3^2+.242243*x_2*x_3^2+.669539*x_3^3+.266083*x_1^2*x_4+.287879*x_1*x_2*x_4+.6246*x_2^2*x_4+.473062*x_1*x_3*x_4+.0423194*x_2*x_3*x_4+.441463*x_3^2*x_4+.840212*x_1*x_4^2+.321239*x_2*x_4^2+.305562*x_3*x_4^2+.94091*x_4^3+.95585*x_1^2+.705873*x_1*x_2+.615731*x_2^2+.113704*x_1*x_3+.473057*x_2*x_3+.240906*x_3^2+.887969*x_1*x_4+.152487*x_2*x_4+.510653*x_3*x_4+.323194*x_4^2+.0460365*x_1+.285128*x_2+.236732*x_3+.0680426*x_4+.413999
+f2 = .618945*x_1^3+.0519869*x_1^2*x_2+.520561*x_1*x_2^2+.91902*x_2^3+.833379*x_1^2*x_3+.843751*x_1*x_2*x_3+.677848*x_2^2*x_3+.501711*x_1*x_3^2+.0833018*x_2*x_3^2+.852516*x_3^3+.286736*x_1^2*x_4+.00307513*x_1*x_2*x_4+.313163*x_2^2*x_4+.899034*x_1*x_3*x_4+.656079*x_2*x_3*x_4+.791897*x_3^2*x_4+.873269*x_1*x_4^2+.514763*x_2*x_4^2+.992153*x_3*x_4^2+.129941*x_4^3+.290805*x_1^2+.00903682*x_1*x_2+.993131*x_2^2+.895608*x_1*x_3+.168894*x_2*x_3+.0439495*x_3^2+.601272*x_1*x_4+.733244*x_2*x_4+.817976*x_3*x_4+.560196*x_4^2+.866896*x_1+.192821*x_2+.428804*x_3+.320001*x_4+.0889948
+f3 = .46682*x_1^3+.605313*x_1^2*x_2+.590098*x_1*x_2^2+.467713*x_2^3+.131827*x_1^2*x_3+.373579*x_1*x_2*x_3+.810717*x_2^2*x_3+.810362*x_1*x_3^2+.825313*x_2*x_3^2+.683903*x_3^3+.667616*x_1^2*x_4+.975601*x_1*x_2*x_4+.205039*x_2^2*x_4+.753314*x_1*x_3*x_4+.0348742*x_2*x_3*x_4+.119425*x_3^2*x_4+.749648*x_1*x_4^2+.0500232*x_2*x_4^2+.493154*x_3*x_4^2+.727394*x_4^3+.943799*x_1^2+.0162906*x_1*x_2+.885007*x_2^2+.943092*x_1*x_3+.402745*x_2*x_3+.452605*x_3^2+.858956*x_1*x_4+.695774*x_2*x_4+.47884*x_3*x_4+.787586*x_4^2+.441647*x_1+.273723*x_2+.550337*x_3+.394416*x_4+.730315
+f4 = .159534*x_1^3+.354006*x_1^2*x_2+.561382*x_1*x_2^2+.111318*x_2^3+.822695*x_1^2*x_3+.370602*x_1*x_2*x_3+.73178*x_2^2*x_3+.132041*x_1*x_3^2+.765134*x_2*x_3^2+.0555769*x_3^3+.219593*x_1^2*x_4+.283968*x_1*x_2*x_4+.516694*x_2^2*x_4+.0306527*x_1*x_3*x_4+.7965*x_2*x_3*x_4+.454399*x_3^2*x_4+.761709*x_1*x_4^2+.0421321*x_2*x_4^2+.224896*x_3*x_4^2+.0372197*x_4^3+.659471*x_1^2+.417035*x_1*x_2+.547528*x_2^2+.546075*x_1*x_3+.187414*x_2*x_3+.0898242*x_3^2+.703758*x_1*x_4+.829478*x_2*x_4+.694859*x_3*x_4+.0666475*x_4^2+.219521*x_1+.375214*x_2+.970747*x_3+.811765*x_4+.277561
+
+F_eqs = [f1, f2, f3, f4]
+
+# --- Start System G (Total Degree) ---
+g1 = x_1^3 - 1
+g2 = x_2^3 - 1
+g3 = x_3^3 - 1
+g4 = x_4^3 - 1
+
+G_eqs = [g1, g2, g3, g4]
+
+# --- Homotopy (Gamma Trick) ---
+# H = (1-t) * gamma * G + t * F
+H_eqs = (1 - t) .* gamma .* G_eqs .+ t .* F_eqs
+
+# ----------------------------------------------------------------
+# 2. 파라미터 값 설정 (Random Gamma)
+# ----------------------------------------------------------------
+theta = rand() * 2 * pi
+val_gamma_raw = cis(theta)
+val_gamma = CC(val_gamma_raw)
+
+println("Using Random Gamma: ", val_gamma)
+
+# ----------------------------------------------------------------
+# 3. HCSystem 생성
+# ----------------------------------------------------------------
+# x 변수들을 벡터로 묶음
+x_vars = [x_1, x_2, x_3, x_4]
+
+sys_random4 = HCSystem(H_eqs, x_vars, [gamma], [val_gamma], t)
+println("=== Random 4 System Created (Nemo) ===")
+
+# ----------------------------------------------------------------
+# 4. Tracking
+# ----------------------------------------------------------------
+# Start Point: x_i^3 = 1 의 해 중 하나인 [1, 1, 1, 1]
+# Nemo AcbFieldElem(CC)으로 초기화
+x_start = [CC(1), CC(1), CC(1), CC(1)]
+
+println("\n🚀 Starting Path Tracking for Random 4...")
+
+# 추적 시작
+x_end, success = track_path(sys_random4, x_start; t_end=1.0)
+
+# ----------------------------------------------------------------
+# 5. 결과 검증
+# ----------------------------------------------------------------
+if success
+    println("\n🎉 Tracking Successful!")
+    println("Solution at t=1:")
+    display(x_end)
+    
+    # Residual Check
+    t_end_val = CC(1.0)
+    
+    # F(x)값 계산 (H(x, 1) = F(x))
+    val_F = evaluate_H(sys_random4, x_end, t_end_val)
+    
+    # 오차(Magnitude) 계산
+    residuals = mag_complex.(val_F)
+    max_resid = maximum(residuals)
+    
+    println("\nMaximum Residual (Error): ", max_resid)
+    
+    if max_resid < 1e-15
+        println("✅ Solution is highly accurate!")
+    else
+        println("⚠️ Solution might need more refinement.")
+    end
+end

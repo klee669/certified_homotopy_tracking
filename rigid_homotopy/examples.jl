@@ -16,8 +16,45 @@ A2 = matrix(convert_to_box_matrix((M- M')/2,CCi))
 w1 = matrix_exponential(A1, t; order = 5)
 w2 = matrix_exponential(A2, t; order = 5)
 wt = [A1, A2]
-p, iters = rigid_track(F, point, .1, wt)
 
+
+
+function random_rotation_matrix(n)
+    Q, R = qr(randn(n, n))
+    Q *= det(Q) < 0 ? -1 : 1  # Make sure it's in SO(n), not just O(n)
+    return Matrix(Q)
+end
+function rigid_transformations(n)
+    transformation_list = []
+    for i in 1:n
+        M = rand(ComplexF64, n, n)
+#        M = Diagonal(map(i -> exp(im*rand(Int)*π/2), 1:n))
+#        M = [M zeros(ComplexF64,n); zeros(ComplexF64,1,n+1)]
+        A = matrix(convert_to_box_matrix((M- M')/2,CCi))
+#        A = random_rotation_matrix(n)
+#        A = matrix(convert_to_box_matrix([A zeros(ComplexF64,n); zeros(ComplexF64,1,n+1)],CCi))
+        push!(transformation_list, matrix_exponential(A, t; order = 10))
+    end
+    return transformation_list
+end
+
+
+wt = rigid_transformations(n)
+
+
+    R = parent(F[1])
+    n = length(F)
+    vars_F = gens(R)[1:n]
+
+    w_t = wt
+    transformations = map(i -> i*vars_F, w_t)
+    transformed_F = map(i -> AbstractAlgebra.evaluate(F[i], [transformations[i]; CCi(0)]), 1:n)
+
+H = transformed_F
+
+
+p, iters = rigid_track(F, point, .1, wt)
+track(H,point, .1; iterations_count = true)
 
 # comparison with the certified linear homotopy
 # These are needed to construct the linear homotopy
@@ -61,11 +98,58 @@ A1 = matrix(convert_to_box_matrix((M- M')/2,CCi))
 M = rand(ComplexF64, 2, 2)
 A2 = matrix(convert_to_box_matrix((M- M')/2,CCi))
 
-w1 = matrix_exponential(A1, t; order = 1)
-w2 = matrix_exponential(A2, t; order = 1)
+M = Diagonal(map(i -> exp(im*rand(Int)*π/2), 1:n))
+A1 = matrix(convert_to_box_matrix(M,CCi))
+M = Diagonal(map(i -> exp(im*rand(Int)*π/2), 1:n))
+A2 = matrix(convert_to_box_matrix(M,CCi))
+
+
+w1 = matrix_exponential(A1, t; order = 10)
+w2 = matrix_exponential(A2, t; order = 10)
 At = [A1, A2]
 wt = [w1, w2]
-p1, iters1 = rigid_track2(F, points[1], .1, wt, At)
+wt = rigid_transformations(n)
+
+    R = parent(F[1])
+    n = length(F)
+    vars_F = gens(R)[1:n]
+
+
+    transformations = map(i -> i*vars_F, wt)
+    transformed_F = map(i -> AbstractAlgebra.evaluate(F[i], [transformations[i]; CCi(0)]), 1:n)
+
+H = transformed_F
+    G = evaluate_matrix(Matrix(transpose(hcat(H))), 0)
+evaluate_matrix(G,points[1])
+
+track(H, points[1], .1; iterations_count = true)
+track(H, points[2], .1; iterations_count = true)
+track(H, points[3], .1; iterations_count = true)
+track(H, points[4], .1; iterations_count = true)
+
+
+    R = parent(F[1])
+n = length(F)
+vars_F = gens(R)[1:n]
+
+w_t = map(i -> evaluate_matrix(Matrix(i), 1), wt)
+transformations = map(i -> i*vars_F, w_t)
+target_system = map(i -> AbstractAlgebra.evaluate(F[i], [transformations[i]; 0]), 1:n)
+
+HH = vec(Matrix((1-t)*CCi(exp(im*rand(Int)))*matrix(F)+ t*matrix(transpose(target_system))))
+lp1, liter1 = track(HH, points[1], .1; iterations_count = true)
+lp2, liter2 = track(HH, points[2], .1; iterations_count = true)
+lp3, liter3 = track(HH, points[3], .1; iterations_count = true)
+lp3, liter3 = track(HH, points[4], .1; iterations_count = true)
+
+
+
+
+p1, iters1 = rigid_track2(F, points[1], .1, wt,At)
+p2, iters2 = rigid_track2(F, points[2], .1, wt,At)
+p3, iters3 = rigid_track2(F, points[3], .1, wt,At)
+p4, iters4 = rigid_track2(F, points[4], .1, wt,At)
+p1, iters1 = rigid_track(F, points[1], .1, wt)
 p2, iters2 = rigid_track(F, points[2], .1, wt)
 p3, iters3 = rigid_track(F, points[3], .1, wt)
 p4, iters4 = rigid_track(F, points[4], .1, wt)
