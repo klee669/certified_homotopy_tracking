@@ -43,6 +43,7 @@ end
 
 
 function compute_preconditioner(sys::HCSystem, x::AbstractVector{AcbFieldElem}, t)
+    CC = parent(x[1])
     x_mid = get_mid_vec(x)
     t_mid = t isa AcbFieldElem ? get_mid(t) : CC(t)
     J_val = evaluate_Jac(sys, x_mid, t_mid) 
@@ -50,6 +51,9 @@ function compute_preconditioner(sys::HCSystem, x::AbstractVector{AcbFieldElem}, 
 end
 
 function krawczyk_test(sys::HCSystem, x::AbstractVector{AcbFieldElem}, t, r::Number; rho=0.7)
+    RR         = parent(real(x[1]))
+    CC         = parent(x[1])
+
     n = length(x)
     x_interval = x 
     
@@ -79,7 +83,7 @@ function krawczyk_test(sys::HCSystem, x::AbstractVector{AcbFieldElem}, t, r::Num
     return k_norm < rho, k_norm
 end
 
-function validate_step_taylor3(sys::HCSystem, X_tm::Vector{TaylorModel3}, t_start, h, r, A; rho=0.7)
+function validate_step_taylor3(sys::HCSystem, X_tm::Vector{TaylorModel3}, t_start, h, r, A, CC, RR; rho=0.7)
     n = length(X_tm)
     t_tm = TaylorModel3(CC(t_start), CC(1), CC(0), CC(0), CC(0), RR(h))
     

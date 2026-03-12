@@ -149,6 +149,10 @@ end
 
 
 function track_path(sys::HCSystem, x_start_input::Vector{AcbFieldElem}; t_start=0.0, t_end=1.0, h_init=0.1)
+    
+    RR         = parent(real(x_start_input[1]))
+    CC         = parent(x_start_input[1])
+
     t = RR(t_start)
     t_target = RR(t_end)
     h = RR(h_init)
@@ -217,7 +221,7 @@ function track_path(sys::HCSystem, x_start_input::Vector{AcbFieldElem}; t_start=
                 X_tm = construct_hermite_predictor_tm(x, x_prev, v, v_prev, h_prev, h)
             end
             
-            passed, k_norm = validate_step_taylor3(sys, X_tm, t, h, Float64(r), A)
+            passed, k_norm = validate_step_taylor3(sys, X_tm, t, h, Float64(r), A, CC, RR)
             
             if passed
                 step_accepted = true

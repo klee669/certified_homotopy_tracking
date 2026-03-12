@@ -144,6 +144,7 @@ end
 
 
 function inv_acb(A::AbstractMatrix)
+    CC = parent(A[1, 1])
     if eltype(A) !== AcbFieldElem
         n_rows, n_cols = size(A)
         A_typed = Matrix{AcbFieldElem}(undef, n_rows, n_cols)

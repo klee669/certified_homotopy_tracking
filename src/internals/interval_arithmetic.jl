@@ -128,6 +128,7 @@ function to_acb_vec(x::AbstractVector)
 end
 
 function get_mid(z::AcbFieldElem)
+    CC = parent(z)
     re = midpoint(real(z)) 
     im = midpoint(imag(z))
     return CC(re, im) 

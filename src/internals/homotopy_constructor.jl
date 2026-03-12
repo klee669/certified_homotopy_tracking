@@ -64,6 +64,8 @@ end
 evaluate_H(sys::HCSystem, x, t) = evaluate_H_augmented(sys, x, t)
 
 function evaluate_Jac(sys::HCSystem, x, t)
+    CC         = parent(x[1])
+
     J_sys = sys.compiled.func_Jx(x, t, sys.p_start..., sys.p_end...)
     if !sys.homogeneous
         return J_sys
@@ -81,6 +83,7 @@ function evaluate_Jac(sys::HCSystem, x, t)
 end
 
 function evaluate_dt_augmented(sys::HCSystem, x, t)
+    CC         = parent(x[1])
     val_dt = sys.compiled.func_dt(x, t, sys.p_start..., sys.p_end...)
     if !sys.homogeneous
         return val_dt

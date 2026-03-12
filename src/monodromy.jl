@@ -2,7 +2,7 @@
 # High-Level Interface
 # ------------------------------------------------------------------------------
 # Exporting Vertex/Edge allows users to inspect results and build custom graphs
-export solve_monodromy, build_gap_group, vertex, edge, parameter_points, galois_width, Edge, Vertex
+export solve_monodromy, build_gap_group, vertex, edge, parameter_points, galois_width, Edge, Vertex, search_point
 
 # ------------------------------------------------------------------------------
 # Data Structures

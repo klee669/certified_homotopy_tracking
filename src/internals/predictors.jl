@@ -79,6 +79,8 @@ end
 
 
 function compute_velocity(sys::HCSystem, x::AbstractVector{AcbFieldElem}, t, A::AbstractMatrix{AcbFieldElem})
+    CC         = parent(x[1])
+
     x_mid = get_mid_vec(x)
     t_mid = t isa AcbFieldElem ? get_mid(t) : CC(t)
     Ht = evaluate_dt(sys, x_mid, t_mid)
@@ -86,6 +88,8 @@ function compute_velocity(sys::HCSystem, x::AbstractVector{AcbFieldElem}, t, A::
 end
 
 function construct_hermite_predictor_tm(x, x_prev, v, v_prev, h_prev, h_curr)
+    CC = parent(x[1])
+    RR = parent(real(x[1]))
     dx = x - x_prev
     dv = v - v_prev
     

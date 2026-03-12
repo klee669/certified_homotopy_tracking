@@ -7,6 +7,8 @@ struct TaylorModel3
 end
 
 function TaylorModel3(c0, c1, c2, c3, rem, h)
+    CC = parent(c0)
+    RR = parent(real(c0))
     TaylorModel3([CC(c0), CC(c1), CC(c2), CC(c3)], CC(rem), RR(h))
 end
 
@@ -15,6 +17,8 @@ Base.one(tm::TaylorModel3) = TaylorModel3(CC(1), CC(0), CC(0), CC(0), CC(0), tm.
 Base.Broadcast.broadcastable(x::TaylorModel3) = Ref(x)
 
 function evaluate_taylor(tm::TaylorModel3)
+    CC = parent(tm.rem)
+    RR = parent(tm.h)
     t_int = CC(RR(0), tm.h) 
     
     val = tm.c[4]
@@ -29,6 +33,7 @@ function Base.:+(a::TaylorModel3, b::TaylorModel3)
     TaylorModel3(a.c .+ b.c, a.rem + b.rem, a.h)
 end
 function Base.:+(a::TaylorModel3, b::Union{Number, AcbFieldElem})
+    CC = parent(a.rem)
     new_c = copy(a.c)
     new_c[1] += CC(b)
     TaylorModel3(new_c, a.rem, a.h)
@@ -40,12 +45,15 @@ function Base.:-(a::TaylorModel3, b::TaylorModel3)
 end
 Base.:-(a::TaylorModel3, b::Union{Number, AcbFieldElem}) = a + (-b)
 function Base.:-(b::Union{Number, AcbFieldElem}, a::TaylorModel3)
+    CC = parent(a.rem)
     new_c = -a.c
     new_c[1] += CC(b)
     TaylorModel3(new_c, -a.rem, a.h)
 end
 
 function Base.:*(a::TaylorModel3, b::TaylorModel3)
+    CC = parent(a.rem)
+    RR = parent(a.h)
     h = a.h
     t_int = CC(RR(0), h)
     
@@ -73,6 +81,7 @@ function Base.:*(a::TaylorModel3, b::TaylorModel3)
 end
 
 function Base.:*(a::TaylorModel3, b::Union{Number, AcbFieldElem})
+    CC = parent(a.rem)
     val = CC(b)
     m = get_mid(val)
     dev = val - m
@@ -96,6 +105,7 @@ function Base.:^(a::TaylorModel3, n::Integer)
 end
 
 function Base.:/(a::TaylorModel3, b::TaylorModel3)
+    CC = parent(a.rem)
     b0 = b.c[1]
     if contains(abs(b0), 0)
         error("Division by zero in Taylor Model arithmetic")
@@ -133,11 +143,13 @@ function Base.:/(a::TaylorModel3, b::TaylorModel3)
 end
 
 function Base.:/(a::TaylorModel3, b::Union{Number, AcbFieldElem})
+    CC = parent(a.rem)
     inv_b = 1 / CC(b)
     return a * inv_b
 end
 
 function Base.:/(a::Union{Number, AcbFieldElem}, b::TaylorModel3)
+    CC = parent(a.rem)
     tm_a = TaylorModel3(CC(a), CC(0), CC(0), CC(0), CC(0), b.h)
     return tm_a / b
 end
