@@ -3,7 +3,7 @@ Pkg.activate(joinpath(@__DIR__, "../.."))
 
 using Nemo
 using AbstractAlgebra
-using CertifiedMonodromyComputation
+using CertifiedHomotopyTracking
 using GAP
 
 println("=== Running 27 Lines Example (Manual Loops) ===")

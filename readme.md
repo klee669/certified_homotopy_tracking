@@ -16,7 +16,7 @@ If you want to track a single solution path from $t=0$ to $t=1$:
 
 ```julia
 using Nemo, AbstractAlgebra
-using CertifiedMonodromyComputation
+using CertifiedHomotopyTracking
 
 # 1. Set up the polynomial ring
 @monodromy_setup begin
@@ -48,33 +48,46 @@ track(H, point; show_display=false) # turn off the display
 To compute the monodromy group of a parameterized system:
 
 ```julia
-using Nemo, AbstractAlgebra
-using CertifiedMonodromyComputation
+using Nemo, AbstractAlgebra, Symbolics, GAP
+using CertifiedHomotopyTracking
+using Random
+Random.seed!() 
 
-# 1. Set up the polynomial ring
-@monodromy_setup begin
-    vars = (x, y)
-    params = (p, q)
-end
-const CCi = _CCi # Alias for the coefficient ring (Complex Interval Field)
+# 1. Set up the variables
+@variables x y t
+@variables p q
+const PREC_BITS = 256
+const CC = AcbField(PREC_BITS) # Complex Field (acb)
+
 
 # 2. Define your parameter system F(x, y; p, q)
 f1 = p*x^2 + 3*y - 4
 f2 = y^2 + q
+F_exprs = [
+    f1, f2
+]
 
-F = [f1 f2]
+x_vars = [x,y]
+p_vars = [p,q]
 
 # 3. Set up the initial seed
-bp = [CCi(1), CCi(-1)] # values of p and q
-x = [CCi(1) , CCi(1)] # a solution at (p, q) = bp
+bp = [CC(1), CC(-1)] # values of p and q
+x = [CC(1) , CC(1)] # a solution at (p, q) = bp
 
 
 # 4. Set up a homotopy graph
 v1 = vertex(bp,[x])
-vs = parameter_points(v1, 2, 6) # make 6 parameter points (vertices) in C^2 including the vertex v1
+vertices = [v1]
+
+for i in 1:3
+    rand_u = [CC(cis(rand()*2*pi)) for _ in 1:2]
+    push!(vertices, vertex(rand_u))
+end
+
+compiled_homotopy = compile_edge_homotopy(F_exprs, x_vars, p_vars, t; homogeneous=false);
 
 # 5. Solve monodromy (Tracking)
-edges = solve_monodromy(F, vs; max_roots=4) # it may require several tries to find all solutions for each vertex
+edges = solve_monodromy(compiled_homotopy, vertices; max_roots=4)
 
 # 6. GAP analysis
 G = build_gap_group(4, edges) # Find a group of size 4 from edge correspondences

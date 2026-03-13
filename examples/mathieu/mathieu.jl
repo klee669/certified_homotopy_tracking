@@ -5,7 +5,7 @@ Pkg.activate(joinpath(@__DIR__, "../.."))
 using Nemo
 using AbstractAlgebra
 using Symbolics
-using CertifiedMonodromyComputation
+using CertifiedHomotopyTracking
 @variables x t
 @variables h g τ
 

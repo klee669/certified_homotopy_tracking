@@ -147,8 +147,8 @@ function track_edge!(
         c_forward, c_backward = e.correspondence21, e.correspondence12
     end
 
-    source_sols = source_v.partial_sols
-    target_sols = target_v.partial_sols
+    source_sols = source_v.sols
+    target_sols = target_v.sols
     
     # Identify which paths haven't been tracked yet
     tracked_indices = Set(x[1] for x in c_forward)

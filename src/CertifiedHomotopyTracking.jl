@@ -1,4 +1,4 @@
-module CertifiedMonodromyComputation
+module CertifiedHomotopyTracking
 
 using Symbolics
 using Nemo

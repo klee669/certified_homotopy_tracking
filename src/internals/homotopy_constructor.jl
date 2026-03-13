@@ -52,6 +52,7 @@ mutable struct HCSystem
     end
 end
 
+
 function evaluate_H_augmented(sys::HCSystem, x, t)
     val_sys = sys.compiled.func_H(x, t, sys.p_start..., sys.p_end...)
     if !sys.homogeneous

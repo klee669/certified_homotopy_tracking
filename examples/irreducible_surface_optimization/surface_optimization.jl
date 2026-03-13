@@ -4,7 +4,7 @@ Pkg.activate(joinpath(@__DIR__, "../.."))
 
 using Nemo
 using AbstractAlgebra
-using CertifiedMonodromyComputation
+using CertifiedHomotopyTracking
 using GAP
 
 # ------------------------------------------------------------------------------
