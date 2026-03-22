@@ -177,7 +177,7 @@ function track_edge!(
         # Check if the result 'y' is a known point in target_v
         dest_idx = search_point(y, target_sols)
         
-        if dest_idx === false
+        if dest_idx === nothing
             # New solution found! Add it to the target vertex
             push!(target_sols, y)
             dest_idx = length(target_sols)
