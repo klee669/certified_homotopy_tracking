@@ -1,10 +1,14 @@
-export CompiledHomotopy, compile_edge_homotopy, HCSystem, evaluate_H, evaluate_Jac, evaluate_dt
+export CompiledHomotopy, compile_edge_homotopy, compile_homotopy, HCSystem, evaluate_H, evaluate_Jac, evaluate_dt
 
 struct CompiledHomotopy
     func_H::Function
     func_Jx::Function
     func_dt::Function
     homogeneous::Bool
+end
+
+function Base.show(io::IO, compiled::CompiledHomotopy)
+    print(io, "CompiledHomotopy(Homogeneous: ", compiled.homogeneous, ")")
 end
 
 mutable struct HCSystem
@@ -22,6 +26,11 @@ mutable struct HCSystem
         RR = ArbField(precision(CC))
         new(compiled, Tuple(p_start), Tuple(p_end), compiled.homogeneous, 1, CC, RR)
     end
+
+    function HCSystem(compiled::CompiledHomotopy, CC::AcbField)
+        RR = ArbField(precision(CC))
+        new(compiled, (), (), compiled.homogeneous, 1, CC, RR)
+    end
 end
 
 struct TMCache
@@ -36,8 +45,33 @@ struct TMCache
 end
 
 
-function compile_edge_homotopy(F_eqs, x_vars, p_vars, t_var; homogeneous=false)
-    println("Compiling Homotopy System (Only Once!)...")
+function compile_homotopy(H_eqs, x_vars, t_var; homogeneous=false)
+    println("Compiling Direct Homotopy System...")
+    
+    target_vars = x_vars
+    
+    if homogeneous
+        @variables u0
+        target_vars = [u0; x_vars]
+        H_eqs = [homogenize_poly(eq, x_vars, u0) for eq in H_eqs]
+        println("-> System Homogenized. Vars: $target_vars")
+    end
+    
+    Jx_sub = Symbolics.jacobian(H_eqs, target_vars)
+    dt_sub = Symbolics.derivative.(H_eqs, t_var)
+    
+    compile_args = [target_vars, t_var]
+    
+    func_H_raw = build_function(H_eqs, compile_args...; expression=Val{false})[1]
+    func_Jx_raw = build_function(Jx_sub, compile_args...; expression=Val{false})[1]
+    func_dt_raw = build_function(dt_sub, compile_args...; expression=Val{false})[1]
+
+    println("Compilation Done.")
+    return CompiledHomotopy(func_H_raw, func_Jx_raw, func_dt_raw, homogeneous)
+end
+
+function compile_edge_homotopy(F_eqs, x_vars, p_vars; homogeneous=false)
+    @variables t_var
     n_params = length(p_vars)
     
     @variables p_starts[1:n_params] p_ends[1:n_params]

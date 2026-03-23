@@ -2,10 +2,7 @@ using Pkg
 Pkg.activate(joinpath(@__DIR__, "../.."))
 #Pkg.instantiate()
 
-using Nemo
-using AbstractAlgebra
 using CertifiedHomotopyTracking
-using GAP
 
 println("=== Running 5 Point Example ===")
 

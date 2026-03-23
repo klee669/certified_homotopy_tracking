@@ -1,12 +1,13 @@
 module CertifiedHomotopyTracking
 
-using Symbolics
-using Nemo
-using AbstractAlgebra
-using LinearAlgebra
-using MultivariatePolynomials
-using DynamicPolynomials 
-using GAP
+using Reexport
+@reexport using Symbolics
+@reexport using Nemo
+@reexport using AbstractAlgebra
+@reexport using LinearAlgebra
+@reexport using MultivariatePolynomials
+@reexport using DynamicPolynomials 
+@reexport using GAP
 
 export @setupfield
 

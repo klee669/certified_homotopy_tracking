@@ -18,7 +18,21 @@ function straight_line_homotopy(F, G, t)
     end
     H
 end
-
+function straight_line_homotopy(F_exprs::AbstractVector{Num}, 
+    G_exprs::AbstractVector{Num}, 
+    x_vars::AbstractVector{Num}; 
+    CCRing=AcbField(256), homogeneous=false)
+    @variables __gamma_trick_internal_param__
+    @variables t_var
+    
+    H = [(1 - t_var) * __gamma_trick_internal_param__ * G_exprs[i] + t_var * F_exprs[i] for i in 1:length(F_exprs)]
+    compiled_H = compile_edge_homotopy(H, x_vars, [__gamma_trick_internal_param__], t_var; homogeneous=homogeneous)
+    
+    gamma_val = CCRing(complex(randn(), randn()))
+    sys = make_edge_system(compiled_H, [gamma_val], [gamma_val])
+    
+    return sys
+end
 # ------------------------------------------------------------------------------
 # Max Degree Calculation
 # ------------------------------------------------------------------------------

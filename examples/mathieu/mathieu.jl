@@ -2,22 +2,19 @@ using Pkg
 Pkg.activate(joinpath(@__DIR__, "../..")) 
 
 
-using Nemo
-using AbstractAlgebra
-using Symbolics
 using CertifiedHomotopyTracking
-@variables x t
+
+@variables x 
 @variables h g τ
 
 const PREC_BITS = 256 
 const CC = AcbField(PREC_BITS) # Complex Field (acb)
 const RR = ArbField(PREC_BITS)    # Real Field (arb)
-const CCi = CC
 
 one_int = RR("0 +/- 1e-30") 
 b_int = CC(one_int, one_int)
 
-g0 = CCi(.549472304541888876273331, .67565033576789561392800491) + b_int
+g0 = CC(.549472304541888876273331, .67565033576789561392800491) + b_int
 tau = (3^17) * (47323*g0^3 - 1084897*g0^2 + 7751*g0 - 711002) / (23^3)
 tau = (2^38) * tau
 minPoly = g^4 + g^3 + 9*g^2 - 10*g + 8
@@ -37,7 +34,7 @@ x_vars = [x]
 p_vars = [h, g, τ]
 
 bp = [CC(1/2), g0, tau]
-x = [CCi(-8.46348528726219075641182680047306619070122436150937232942857413267516074415, -8.236051504540776298957760979865031236775465557582439518026284354264711900635)]
+x = [CC(-8.46348528726219075641182680047306619070122436150937232942857413267516074415, -8.236051504540776298957760979865031236775465557582439518026284354264711900635)]
 
 v1 = vertex(bp, [x])
 p_list = [
@@ -67,29 +64,6 @@ p_list = [
 ]
 
 vertices = [v1]
-
-red1 = [CC(1/2), g0, tau]
-red2 = [CC(-1,1), g0, tau]
-red3 = [CC(-1,-1), g0, tau]
-
-v1 = vertex(red1, [x])
-v2 = vertex(red2)
-v3 = vertex(red3)
-
-
-function search_point_local(res, p_list)
-    n = length(p_list)
-    k = 1
-    dummy = max_norm(matrix(res - p_list[1]))
-    for i = 2:n 
-        m = max_norm(matrix(res - p_list[i]))
-        if m < dummy
-            dummy = m
-            k = i
-        end
-    end
-    return k
-end
 
 function track_loop(bp, a, b, x0, r, p_list, i, F)
     println("Root Number $i: Tracking the first edge")
@@ -142,7 +116,7 @@ r = 0.1
 
 vertices = [v1, v2, v3]
 
-compiled_homotopy = compile_edge_homotopy(F_exprs, x_vars, p_vars, t; homogeneous=false)
+compiled_homotopy = compile_edge_homotopy(F_exprs, x_vars, p_vars)
 
 println("\n[Loop 1] Red Loop")
 p1 = generate_perm(compiled_homotopy, red1, red2, red3, r, p_list) #[1, 2, 6, 4, 7, 3, 5, 9, 8, 11, 10, 12, 13, 15, 14, 16, 18, 17, 20, 19, 22, 21, 23]
@@ -156,7 +130,6 @@ println("\n[Loop 2] Green Loop")
 p2 = generate_perm(compiled_homotopy, green1, green2, green3, r, p_list) #[2, 4, 3, 5, 1, 7, 14, 8, 11, 6, 13, 9, 12, 10, 16, 17, 19, 18, 15, 21, 20, 23, 22]
 
 println("\n=== GAP Analysis ===")
-using GAP
 p1_gap = GAP.Globals.PermList(GAP.Obj(p1[2]))
 p2_gap = GAP.Globals.PermList(GAP.Obj(p2[2]))
 
