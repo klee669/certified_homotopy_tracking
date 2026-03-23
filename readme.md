@@ -67,11 +67,11 @@ p_vars = [p,q]
 
 # 3. Set up the initial seed
 bp = [CC(1), CC(-1)] # values of p and q
-x = [CC(1) , CC(1)] # a solution at (p, q) = bp
+x0 = [CC(1) , CC(1)] # a solution at (p, q) = bp
 
 
 # 4. Set up a homotopy graph
-v1 = vertex(bp,[x])
+v1 = vertex(bp,[x0])
 vertices = [v1]
 
 for i in 1:3
