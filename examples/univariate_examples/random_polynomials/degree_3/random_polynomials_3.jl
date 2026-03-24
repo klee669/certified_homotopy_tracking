@@ -1,22 +1,48 @@
-include("../../../../src/certified_monodromy_computation.jl")
+using Pkg
+Pkg.activate(joinpath(@__DIR__, "../../../.."))
 
+using CertifiedHomotopyTracking
 
-@setupfield begin
-    AcbField(1024)
-    (x,)
-    (η,)
-    (t,)
-    (c0,c1,c2,c3)
+@variables x
+@variables c0, c1, c2, c3
+const PREC_BITS = 256
+const CC = AcbField(PREC_BITS)
+
+F = [c3*x^3+c2*x^2+c1*x+c0]
+bp = [CC(1/2), CC(9/7), CC(9/7), CC(45/7)]
+x0 = [CC(.0720838,-.481488)]
+v1 = vertex(bp,[x0])
+
+vars = [x]
+pars = [c0, c1, c2, c3]
+v1 = vertex(bp,[x0])
+deg = length(pars)-1
+
+compiled_homotopy = compile_edge_homotopy(F, vars, pars)
+
+function str_convert(
+    l::Vector{Vector{Int64}}, 
+    filepath::String, 
+    group_name::String
+)
+    open(filepath, "w") do file 
+        iter = 0;
+        for i in l 
+            write(file, "p$iter:= PermList($i);\n")
+            iter = iter + 1;
+        end
+
+        write(file, "$group_name:=Group(")
+        for i in 0:length(l)-1
+            if i < length(l)-1
+                write(file, "p$i,")
+            else
+                write(file, "p$i")
+            end
+        end
+        write(file, ");")
+    end
 end
-
-CCi = _CCi
-r = .1;
-
-F = hcat([c3*x^3+c2*x^2+c1*x+c0])
-bp = [CCi(1/2), CCi(9/7), CCi(9/7), CCi(45/7)]
-x = [CCi(.0720838,-.481488)]
-v1 = vertex(bp,[x])
-n_nodes = 6;
 
 path_name = joinpath(@__DIR__)
 filename = joinpath(path_name, "random_polynomials_3.txt")
@@ -24,76 +50,115 @@ cmd = string("Read(\"", filename, "\");")
 GAP.evalstr(cmd)
 @gap("G;")
 @gap("StructureDescription(G);") # S3
+@gap("GaloisWidth := function(G)
+  local X, M, C, phi;
+  if IsTrivial(G) then return 1;
+  elif IsNaturalSymmetricGroup(G) or IsNaturalAlternatingGroup(G) then
+    X := OrbitsDomain(G)[1];
+    if Length(X) = 4 then return 3;
+    else return Length(X);
+    fi;
+  elif IsCyclic(G) then return Maximum(Factors(Order(G)));
+  elif not IsTransitive(G) then 
+    return Maximum(List(Orbits(G), 
+      O -> GaloisWidth(Image(ActionHomomorphism(G,O)))
+    ));
+  else
+    X := OrbitsDomain(G)[1];
+    if not IsPrimitive(G) then
+      phi := ActionHomomorphism(G,Blocks(G, X),OnSets);
+      return Maximum(GaloisWidth(Kernel(phi)), GaloisWidth(Image(phi)));
+    elif IsSimple(G) then
+      M := List(ConjugacyClassesMaximalSubgroups(G), H -> Representative(H));
+      return Minimum(List(M, H -> Order(G)/Order(H)));
+    else
+      C := CompositionSeries(G);
+      return Maximum(List([1..Length(C)-1], 
+        i -> GaloisWidth(C[i]/C[i+1])
+      ));
+    fi;
+  fi;
+end;
+")
 @gap("GaloisWidth(G);") # 3
 
-
 for n_nodes in 3:6
-    result_name = "results_degree_3_$(n_nodes)_nodes.txt"
+    result_name = "results_degree_3_$(n_nodes)_nodes_new.txt"
     result_filename = joinpath(path_name, result_name)
     path = result_filename
-using GAP
-gw_counts = Dict{Int, Int}()
+    gw_counts = Dict{Int, Int}()
 
-#@gap("LoadPackage(\"sonata\");")
-open(path, "w") do file
-    false_count = 0;
-    fail_correspondence_count = 0;
-    tracking_error_count = 0;
-    i = 1;
-    while i <= 100
-        try
-            v1 = vertex(bp,[x])
-            vs = parameter_points(v1, 4, n_nodes)
-            edges = track_complete_graph(F, r, vs,3)
-            if length(edges[1].correspondence12) != 3
-                fail_correspondence_count = fail_correspondence_count+1;
-            end
+    open(path, "w") do file
+        false_count = 0;
+        fail_correspondence_count = 0;
+        tracking_error_count = 0;
+        i = 1;
+        while i <= 100
+            try
+                v1 = vertex(bp,[x0])
+                vertices = [v1]
 
-            dummy_name = "random_polynomials_3_$(n_nodes)nodes"
-            save_path = joinpath(path_name, dummy_name)
+                for _ in 1:(n_nodes - 1) 
+                    rand_u = [CC(cis(rand()*2*pi)) for _ in 1:length(pars)]
+                    push!(vertices, vertex(rand_u))
+                end
+                edges = solve_monodromy(compiled_homotopy, vertices; max_roots=deg)
 
-            perms=get_permutations(length(edges[1].correspondence12),edges)
-            str_convert(perms, save_path, "H")
-#            str_convert(perms, "~/Documents/GitHub/certified_monodromy_comp/examples/univariate_examples/sum_of_even_degrees_partially_squared/degree_4/even_degree_sums_4_$(n_nodes)nodes", "H")
-    
-            dummy_filename = joinpath(path_name, dummy_name * ".txt")
-            cmd = string("Read(\"", dummy_filename, "\");")
-            GAP.evalstr(cmd)
-            A=@gap("StructureDescription(H);") 
-            println(A);
-            tf=string(@gap("IsomorphismGroups(G,H);"))
-            if tf == "fail"
-                gw = @gap("GaloisWidth(H);")
-                gw_counts[gw] = get(gw_counts, gw, 0) + 1
-                false_count = false_count+1;
-                tf = "false";
-            else
-                tf = "true";
-            end
-            write(file, "G#$i description: $A\n")
-            write(file, "    isomorphic?: $tf\n")
-            if tf == "false"
-                write(file, "    Galois width: $gw\n")
-            end
-            write(file, "\n")
-            flush(file)
-            i += 1
 
-        catch e
-            println("⚠️ Error at i=$i: $(e)")
-#                    write(file, "⚠️ Error at i=$i: $(e)\n\n")
-        continue
+                if isempty(edges)
+                    throw(ErrorException("No edges were generated."))
+                end
+                if length(edges[1].correspondence12) != deg
+                    fail_correspondence_count += 1
+                end
+
+                dummy_name = "random_polynomials_$(deg)_$(n_nodes)nodes_new"
+                save_path = joinpath(path_name, dummy_name)
+
+                dummy_filename = joinpath(path_name, dummy_name * ".txt")
+                perms = get_permutations(length(edges[1].correspondence12), edges)
+                str_convert(perms, dummy_filename, "H") 
+                
+                cmd_dummy = string("Read(\"", dummy_filename, "\");")
+                GAP.evalstr(cmd_dummy)
+
+                A = @gap("StructureDescription(H);") 
+                println(A);
+
+                gw = -1 
+                tf = string(@gap("IsomorphismGroups(G,H);"))
+
+                if tf == "fail"
+                    gw = @gap("GaloisWidth(H);")
+                    gw_counts[gw] = get(gw_counts, gw, 0) + 1
+                    false_count += 1
+                    tf = "false"
+                else
+                    tf = "true"
+                end
+                write(file, "G#$i description: $A\n")
+                write(file, "    isomorphic?: $tf\n")
+                if tf == "false"
+                    write(file, "    Galois width: $gw\n")
+                end
+                write(file, "\n")
+                flush(file)
+                i += 1
+
+            catch e
+                println("⚠️ Error at i=$i: $(e)")
+            continue
+        end
+                
+        end
+        write(file, "number of incomplete correspondences: $fail_correspondence_count\n")
+        write(file, "false count: $false_count\n")
+
+        write(file, "Galois width counts:\n")
+        for (k,v) in sort(collect(gw_counts))
+            write(file, "gw = $k occurred $v times\n")
+        end
     end
-            
-    end
-    write(file, "number of incomplete correspondences: $fail_correspondence_count\n")
-    write(file, "false count: $false_count\n")
-
-    write(file, "Galois width counts:\n")
-    for (k,v) in sort(collect(gw_counts))
-        write(file, "gw = $k occurred $v times\n")
-    end
-end
 
 
 end

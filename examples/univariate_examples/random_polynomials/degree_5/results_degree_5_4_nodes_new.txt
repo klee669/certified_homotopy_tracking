@@ -1,0 +1,373 @@
+G#1 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#2 description: GAP: "S4"
+    isomorphic?: false
+    Galois width: 3
+
+G#3 description: GAP: "S3"
+    isomorphic?: false
+    Galois width: 3
+
+G#4 description: GAP: "S5"
+    isomorphic?: true
+
+G#5 description: GAP: "S5"
+    isomorphic?: true
+
+G#6 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#7 description: GAP: "S5"
+    isomorphic?: true
+
+G#8 description: GAP: "A5"
+    isomorphic?: false
+    Galois width: 5
+
+G#9 description: GAP: "S4"
+    isomorphic?: false
+    Galois width: 3
+
+G#10 description: GAP: "S3"
+    isomorphic?: false
+    Galois width: 3
+
+G#11 description: GAP: "S5"
+    isomorphic?: true
+
+G#12 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#13 description: GAP: "S5"
+    isomorphic?: true
+
+G#14 description: GAP: "S3"
+    isomorphic?: false
+    Galois width: 3
+
+G#15 description: GAP: "S5"
+    isomorphic?: true
+
+G#16 description: GAP: "S5"
+    isomorphic?: true
+
+G#17 description: GAP: "S4"
+    isomorphic?: false
+    Galois width: 3
+
+G#18 description: GAP: "C2"
+    isomorphic?: false
+    Galois width: 2
+
+G#19 description: GAP: "S5"
+    isomorphic?: true
+
+G#20 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#21 description: GAP: "S5"
+    isomorphic?: true
+
+G#22 description: GAP: "S4"
+    isomorphic?: false
+    Galois width: 3
+
+G#23 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#24 description: GAP: "S5"
+    isomorphic?: true
+
+G#25 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#26 description: GAP: "D8"
+    isomorphic?: false
+    Galois width: 2
+
+G#27 description: GAP: "S5"
+    isomorphic?: true
+
+G#28 description: GAP: "A4"
+    isomorphic?: false
+    Galois width: 3
+
+G#29 description: GAP: "A4"
+    isomorphic?: false
+    Galois width: 3
+
+G#30 description: GAP: "S5"
+    isomorphic?: true
+
+G#31 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#32 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#33 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#34 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#35 description: GAP: "S3"
+    isomorphic?: false
+    Galois width: 3
+
+G#36 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#37 description: GAP: "S5"
+    isomorphic?: true
+
+G#38 description: GAP: "C2"
+    isomorphic?: false
+    Galois width: 2
+
+G#39 description: GAP: "S4"
+    isomorphic?: false
+    Galois width: 3
+
+G#40 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#41 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#42 description: GAP: "S5"
+    isomorphic?: true
+
+G#43 description: GAP: "S5"
+    isomorphic?: true
+
+G#44 description: GAP: "S5"
+    isomorphic?: true
+
+G#45 description: GAP: "D8"
+    isomorphic?: false
+    Galois width: 2
+
+G#46 description: GAP: "D8"
+    isomorphic?: false
+    Galois width: 2
+
+G#47 description: GAP: "D8"
+    isomorphic?: false
+    Galois width: 2
+
+G#48 description: GAP: "S5"
+    isomorphic?: true
+
+G#49 description: GAP: "S5"
+    isomorphic?: true
+
+G#50 description: GAP: "S5"
+    isomorphic?: true
+
+G#51 description: GAP: "A5"
+    isomorphic?: false
+    Galois width: 5
+
+G#52 description: GAP: "S5"
+    isomorphic?: true
+
+G#53 description: GAP: "A5"
+    isomorphic?: false
+    Galois width: 5
+
+G#54 description: GAP: "D10"
+    isomorphic?: false
+    Galois width: 5
+
+G#55 description: GAP: "S5"
+    isomorphic?: true
+
+G#56 description: GAP: "C4"
+    isomorphic?: false
+    Galois width: 2
+
+G#57 description: GAP: "S4"
+    isomorphic?: false
+    Galois width: 3
+
+G#58 description: GAP: "D8"
+    isomorphic?: false
+    Galois width: 2
+
+G#59 description: GAP: "C4"
+    isomorphic?: false
+    Galois width: 2
+
+G#60 description: GAP: "C4"
+    isomorphic?: false
+    Galois width: 2
+
+G#61 description: GAP: "S5"
+    isomorphic?: true
+
+G#62 description: GAP: "S5"
+    isomorphic?: true
+
+G#63 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#64 description: GAP: "S4"
+    isomorphic?: false
+    Galois width: 3
+
+G#65 description: GAP: "A4"
+    isomorphic?: false
+    Galois width: 3
+
+G#66 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#67 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#68 description: GAP: "S5"
+    isomorphic?: true
+
+G#69 description: GAP: "S5"
+    isomorphic?: true
+
+G#70 description: GAP: "C2"
+    isomorphic?: false
+    Galois width: 2
+
+G#71 description: GAP: "D8"
+    isomorphic?: false
+    Galois width: 2
+
+G#72 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#73 description: GAP: "S4"
+    isomorphic?: false
+    Galois width: 3
+
+G#74 description: GAP: "S5"
+    isomorphic?: true
+
+G#75 description: GAP: "S5"
+    isomorphic?: true
+
+G#76 description: GAP: "A5"
+    isomorphic?: false
+    Galois width: 5
+
+G#77 description: GAP: "C2"
+    isomorphic?: false
+    Galois width: 2
+
+G#78 description: GAP: "S3"
+    isomorphic?: false
+    Galois width: 3
+
+G#79 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#80 description: GAP: "C2"
+    isomorphic?: false
+    Galois width: 2
+
+G#81 description: GAP: "S5"
+    isomorphic?: true
+
+G#82 description: GAP: "S3"
+    isomorphic?: false
+    Galois width: 3
+
+G#83 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#84 description: GAP: "S3"
+    isomorphic?: false
+    Galois width: 3
+
+G#85 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#86 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#87 description: GAP: "A5"
+    isomorphic?: false
+    Galois width: 5
+
+G#88 description: GAP: "S5"
+    isomorphic?: true
+
+G#89 description: GAP: "A5"
+    isomorphic?: false
+    Galois width: 5
+
+G#90 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#91 description: GAP: "S5"
+    isomorphic?: true
+
+G#92 description: GAP: "S5"
+    isomorphic?: true
+
+G#93 description: GAP: "C2"
+    isomorphic?: false
+    Galois width: 2
+
+G#94 description: GAP: "C2"
+    isomorphic?: false
+    Galois width: 2
+
+G#95 description: GAP: "S5"
+    isomorphic?: true
+
+G#96 description: GAP: "C2"
+    isomorphic?: false
+    Galois width: 2
+
+G#97 description: GAP: "S5"
+    isomorphic?: true
+
+G#98 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+G#99 description: GAP: "S5"
+    isomorphic?: true
+
+G#100 description: GAP: "1"
+    isomorphic?: false
+    Galois width: 1
+
+number of incomplete correspondences: 58
+false count: 66
+Galois width counts:
+gw = 1 occurred 24 times
+gw = 2 occurred 17 times
+gw = 3 occurred 18 times
+gw = 5 occurred 7 times
