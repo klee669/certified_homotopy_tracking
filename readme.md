@@ -8,8 +8,6 @@
 * [Quick Start](#quick-start)
   * [1. Basic certified tracking](#1-basic-certified-tracking)
   * [2. Certified monodromy group computation](#2-certified-monodromy-group-computation)
-       * [2.1 Homotopy graphs](#21-homotopy-graphs)
-       * [2.2 Specific loops](#22-specific-loops)
 
 
 ## Features
@@ -52,8 +50,6 @@ max_norm(hcat(evaluate_H(H, y, CC(1)))) # check the residual of the result!
 
 
 ### 2. Certified monodromy group computation
-
-#### 2.1 Homotopy graphs
 
 To compute the monodromy group of a parameterized system:
 
@@ -108,5 +104,4 @@ if G !== nothing
 end
 ```
 
-#### 2.2 Specific loops
 
