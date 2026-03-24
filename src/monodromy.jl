@@ -2,7 +2,7 @@
 # High-Level Interface
 # ------------------------------------------------------------------------------
 # Exporting Vertex/Edge allows users to inspect results and build custom graphs
-export solve_monodromy, build_gap_group, vertex, edge, parameter_points, galois_width, Edge, Vertex, search_point
+export solve_monodromy, build_gap_group, vertex, edge, parameter_points, galois_width, Edge, Vertex, search_point, build_edges
 
 # ------------------------------------------------------------------------------
 # Data Structures
@@ -29,6 +29,18 @@ edge(p::Vertex, q::Vertex) = Edge(p, q, Tuple{Int,Int}[], Tuple{Int,Int}[])
 
 Base.show(io::IO, v::Vertex) = print(io, "Vertex($(length(v.sols)) solutions)")
 Base.show(io::IO, e::Edge) = print(io, "Edge($(length(e.correspondence12)) correspondences)")
+
+function build_edges(vertices::Vector{Vertex}, edge_pairs::Vector{Tuple{Int, Int}})
+    custom_edges = Edge[]
+    for (i, j) in edge_pairs
+        e = edge(vertices[i], vertices[j])
+        push!(custom_edges, e)
+        push!(vertices[i].Edges, e)
+        push!(vertices[j].Edges, e)
+    end
+    return custom_edges
+end
+
 
 function make_edge_system(compiled_sys::CompiledHomotopy, p_start::Vector{AcbFieldElem}, p_end::Vector{AcbFieldElem})
     return HCSystem(compiled_sys, p_start, p_end)
@@ -259,17 +271,9 @@ function track_edge!(compiled_sys::CompiledHomotopy, e::Edge, from1to2::Bool, ed
     println(" Done. (Ok: $count_success, New: $count_new, Collision: $count_collision)")
 end
 
-function solve_monodromy(compiled_sys::CompiledHomotopy, vertices::Vector{Vertex}; max_roots=20)
-    edges = Edge[]
-    for i in 1:length(vertices)-1
-        for j in i+1:length(vertices)
-            e = edge(vertices[i], vertices[j])
-            push!(edges, e)
-            push!(vertices[i].Edges, e)
-            push!(vertices[j].Edges, e)
-        end
-    end
-    
+
+
+function solve_monodromy(compiled_sys::CompiledHomotopy, vertices::Vector{Vertex}, edges::Vector{Edge}; max_roots=20)
     iter = 0
     iter_stagnant = 0
     total_correspondences = 0
@@ -327,7 +331,20 @@ function solve_monodromy(compiled_sys::CompiledHomotopy, vertices::Vector{Vertex
     
     return edges
 end
-
+function solve_monodromy(compiled_sys::CompiledHomotopy, vertices::Vector{Vertex}; max_roots=20)
+    println("Building a complete graph for the given vertices...")
+    edges = Edge[]
+    for i in 1:length(vertices)-1
+        for j in i+1:length(vertices)
+            e = edge(vertices[i], vertices[j])
+            push!(edges, e)
+            push!(vertices[i].Edges, e)
+            push!(vertices[j].Edges, e)
+        end
+    end
+    
+    return solve_monodromy(compiled_sys, vertices, edges; max_roots=max_roots)
+end
 
 # ------------------------------------------------------------------------------
 # GAP Integration
