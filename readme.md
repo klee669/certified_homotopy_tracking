@@ -2,6 +2,16 @@
 
 **CertifiedHomotopyTracking.jl** is a Julia package for **certified homotopy tracking** and **monodromy group computation**. It uses interval arithmetic (via [Nemo.jl](https://github.com/Nemocas/Nemo.jl) and Arb) to provide mathematically rigorous results and integrates with [GAP](https://www.gap-system.org/) for group-theoretic analysis.
 
+
+## Table of Contents
+* [Features](#features)
+* [Quick Start](#quick-start)
+  * [1. Basic certified tracking](#1-basic-certified-tracking)
+  * [2. Certified monodromy group computation](#2-certified-monodromy-group-computation)
+      * [2.1 Homotopy graphs](#2.1-homotopy-graphs)
+      * [2.2 Specific loops](#2.2-specific-loops)
+
+
 ## Features
 
 * **Certified tracking:** Uses interval arithmetic and the Krawczyk test to certify solution paths.
@@ -42,6 +52,8 @@ max_norm(hcat(evaluate_H(H, y, CC(1)))) # check the residual of the result!
 
 
 ### 2. Certified monodromy group computation
+
+#### 2.1 Homotopy graphs
 
 To compute the monodromy group of a parameterized system:
 
@@ -95,3 +107,6 @@ if G !== nothing
     println(gw) # 2
 end
 ```
+
+#### 2.2 Specific loops
+
