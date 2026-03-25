@@ -1,0 +1,11 @@
+p0:= PermList([1, 4, 3, 5, 6, 2]);
+p1:= PermList([1, 2, 3, 4, 5, 6]);
+p2:= PermList([5, 1, 2, 4, 3, 6]);
+p3:= PermList([1, 4, 3, 5, 6, 2]);
+p4:= PermList([1, 2, 3, 4, 5, 6]);
+p5:= PermList([5, 1, 2, 6, 3, 4]);
+p6:= PermList([3, 2, 1, 4, 5, 6]);
+p7:= PermList([5, 1, 2, 4, 3, 6]);
+p8:= PermList([4, 1, 6, 5, 3, 2]);
+p9:= PermList([4, 3, 6, 5, 1, 2]);
+H:=Group(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9);
