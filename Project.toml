@@ -22,3 +22,10 @@ MultivariatePolynomials = "0.5.13"
 Nemo = "0.53.1"
 Reexport = "1.2.2"
 Symbolics = "7.15.3"
+
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

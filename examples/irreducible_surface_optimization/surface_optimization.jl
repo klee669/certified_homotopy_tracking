@@ -44,12 +44,12 @@ edges = solve_monodromy(compiled_homotopy, vertices; max_roots=8)
 # ------------------------------------------------------------------------------
 # 4. GAP Group Construction
 # ------------------------------------------------------------------------------
-G = build_gap_group(4, edges) # Find a group of size 4 from edge correspondences
+G = build_gap_group(8, edges) # Find a group of size 8 from edge correspondences
 
 if G !== nothing
     println("Structure Description:")
-    println(GAP.Globals.StructureDescription(G)) # C2 x C2
+    println(GAP.Globals.StructureDescription(G)) 
     println("Galois Width:")
     gw = galois_width(G)
-    println(gw) # 2
+    println(gw) # 3
 end
