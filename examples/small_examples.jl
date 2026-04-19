@@ -26,8 +26,8 @@ evaluate_H(H, y, CC(1))
 const PREC_BITS = 256
 const CC = AcbField(PREC_BITS)
 
-F = [x^2 + 3*y - 4 y^2 + 3]
-G = [x^2-1 y^2-1]
+F = [x^2 + 3*y - 4, y^2 + 3]
+G = [x^2-1, y^2-1]
 
 H = straight_line_homotopy(F, G, [x, y]; CCRing=CC)
 point = [CC(1), CC(-1)]
@@ -50,8 +50,8 @@ f3 = 2*a*b + 2*b*c - b
 g1 = a - 1
 g2 = b^2 - 1
 g3 = c^2 - 1
-G = [g1 g2 g3]
-F = [f1 f2 f3]
+G = [g1, g2, g3]
+F = [f1, f2, f3]
 
 H = straight_line_homotopy(F, G, [a, b, c]; CCRing=CC)
 point = [CC(1), CC(-1), CC(-1)]
@@ -78,8 +78,8 @@ g2 = x_2^2-1
 g3 = x_3^2-1
 g4 = x_4^2-1
 g5 = x_5^2-1
-G = [g1 g2 g3 g4 g5]
-F = [f1 f2 f3 f4 f5]
+G = [g1, g2, g3, g4, g5]
+F = [f1, f2, f3, f4, f5]
 
 # users can define own homotopy as well
 H = straight_line_homotopy(F, G, [x_1, x_2, x_3, x_4, x_5]; CCRing=CC)
@@ -104,8 +104,8 @@ g1 = x_1^3-1
 g2 = x_2^3-1
 g3 = x_3^3-1
 g4 = x_4^3-1
-G = [g1 g2 g3 g4]
-F = [f1 f2 f3 f4]
+G = [g1, g2, g3, g4]
+F = [f1, f2, f3, f4]
 H = straight_line_homotopy(F,G,[x_1, x_2, x_3, x_4]; CCRing=CC)
 point = [CC(1), CC(1), CC(1), CC(1)]
 
@@ -138,8 +138,8 @@ g6 = f^2-1
 g7 = h^2-1
 g8 = g^2-1
 g9 = i^2-1
-G = [g1 g2 g3 g4 g5 g6 g7 g8 g9]
-F = [f1 f2 f3 f4 f5 f6 f7 f8 f9]
+G = [g1, g2, g3, g4, g5, g6, g7, g8, g9]
+F = [f1, f2, f3, f4, f5, f6, f7, f8, f9]
 
 H = straight_line_homotopy(F,G,[a, b, c, d, e, f, g, h, i]; CCRing=CC)
 point = [CC(1), CC(-1), CC(-1), CC(-1), CC(-1), CC(-1), CC(-1), CC(-1), CC(-1)]
